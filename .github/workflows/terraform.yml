@@ -1,0 +1,44 @@
+name: Terraform CI/CD
+
+on:
+  push:
+    branches: [ main, dev ]
+  pull_request:
+    branches: [ main, dev ]
+
+env:
+  AWS_REGION: us-east-1
+
+jobs:
+  terraform:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: Set up Terraform
+      uses: hashicorp/setup-terraform@v3
+
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v2
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: us-east-1
+
+    - name: Init
+      run: cd infrastructure && terraform init
+
+    - name: Format Check
+      run: cd infrastructure && terraform fmt -check
+
+    - name: Validate
+      run: cd infrastructure && terraform validate
+
+    - name: Plan
+      run: cd infrastructure && terraform plan -var-file="terraform.tfvars"
+
+    - name: Apply (main branch only)
+      if: github.ref == 'refs/heads/main'
+      run: cd infrastructure && terraform apply -auto-approve -var-file="terraform.tfvars"
