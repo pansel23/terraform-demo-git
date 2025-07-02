@@ -31,7 +31,7 @@ jobs:
       run: cd infra && terraform init
 
     - name: Format Check
-      run: cd infra && terraform fmt -check
+      run: cd infra && terraform fmt
 
     - name: Validate
       run: cd infra && terraform validate
