@@ -28,17 +28,17 @@ jobs:
         aws-region: us-east-1
 
     - name: Init
-      run: cd infrastructure && terraform init
+      run: cd infra && terraform init
 
     - name: Format Check
-      run: cd infrastructure && terraform fmt -check
+      run: cd infra && terraform fmt -check
 
     - name: Validate
-      run: cd infrastructure && terraform validate
+      run: cd infra && terraform validate
 
     - name: Plan
-      run: cd infrastructure && terraform plan -var-file="terraform.tfvars"
+      run: cd infra && terraform plan -var-file="terraform.tfvars"
 
     - name: Apply (main branch only)
       if: github.ref == 'refs/heads/main'
-      run: cd infrastructure && terraform apply -auto-approve -var-file="terraform.tfvars"
+      run: cd infra && terraform apply -auto-approve -var-file="terraform.tfvars"
